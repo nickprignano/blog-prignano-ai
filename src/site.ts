@@ -3,7 +3,7 @@ export const SITE = {
   url: "https://blog.prignano.ai",
   title: "Nick Prignano",
   description:
-    "Notes on Nerdio Manager for Enterprise, Azure Virtual Desktop, Terraform and Packer, for AVD and Nerdio admins, consultants and MSP engineers.",
+    "Adventures in vibe coding, shifting left, and overcoming boundaries.",
   author: "Nick Prignano",
   // Shown in the header, as on prignano.ai.
   bio: "Wow everything is computer",
@@ -21,6 +21,9 @@ export const SITE = {
 // Colour of a post's line art, by its first tag. Tags not listed here get a
 // colour picked from the post's slug.
 export const TAG_HUES: Record<string, number> = {
+  "vibe-coding": 285,
+  "shift-left": 25,
+  ai: 175,
   nerdio: 160,
   avd: 205,
   azure: 210,

@@ -1,7 +1,7 @@
 # blog.prignano.ai
 
-Source for [blog.prignano.ai](https://blog.prignano.ai): posts on Nerdio Manager
-for Enterprise, Azure Virtual Desktop, Terraform and Packer.
+Source for [blog.prignano.ai](https://blog.prignano.ai): adventures in vibe
+coding, shifting left, and overcoming boundaries.
 
 It's a static [Astro](https://astro.build) site. Cloudflare builds it and
 deploys it whenever something is merged to `main`.

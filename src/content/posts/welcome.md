@@ -1,8 +1,8 @@
 ---
 title: "Welcome to the blog"
-description: "What this blog covers and who it's for: Nerdio Manager for Enterprise, Azure Virtual Desktop, Terraform and Packer."
+description: "What this blog is about: vibe coding, shifting left, and overcoming boundaries."
 date: 2026-10-17
-tags: [nerdio, avd, terraform, packer]
+tags: [vibe-coding, shift-left]
 # A draft is visible in `npm run dev` but not on the live site.
 # Set this to false (or delete the line) to publish.
 draft: true
@@ -14,8 +14,8 @@ delete the file.
 
 ## What you'll find here
 
-Practical write-ups on Nerdio Manager for Enterprise, Azure Virtual Desktop,
-and building images and infrastructure with Terraform and Packer.
+Adventures in vibe coding, shifting left, and overcoming boundaries: what I
+tried, what broke, and what I learned.
 
 ## Code blocks
 

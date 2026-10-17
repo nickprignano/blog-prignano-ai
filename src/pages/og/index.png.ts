@@ -6,7 +6,7 @@ import { SITE } from "../../site";
 export const GET: APIRoute = async () => {
   const png = await renderCard({
     title: SITE.title,
-    subtitle: "Nerdio, Azure Virtual Desktop, Terraform and Packer",
+    subtitle: "Vibe coding, shifting left, and overcoming boundaries",
     seed: "blog.prignano.ai",
     hue: 205,
   });
