@@ -3,7 +3,7 @@ export const SITE = {
   url: "https://blog.prignano.ai",
   title: "Nick Prignano",
   description:
-    "Adventures in vibe coding, shifting left, and overcoming boundaries.",
+    "Adventures in vibe coding, building past my pay grade, and overcoming boundaries.",
   author: "Nick Prignano",
   // Shown in the header, as on prignano.ai.
   bio: "Wow everything is computer",
@@ -22,7 +22,7 @@ export const SITE = {
 // colour picked from the post's slug.
 export const TAG_HUES: Record<string, number> = {
   "vibe-coding": 285,
-  "shift-left": 25,
+  "pay-grade": 25,
   ai: 175,
   nerdio: 160,
   avd: 205,

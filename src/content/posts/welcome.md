@@ -1,8 +1,8 @@
 ---
 title: "Welcome to the blog"
-description: "What this blog is about: vibe coding, shifting left, and overcoming boundaries."
+description: "What this blog is about: vibe coding, building past my pay grade, and overcoming boundaries."
 date: 2026-10-17
-tags: [vibe-coding, shift-left]
+tags: [vibe-coding, pay-grade]
 # A draft is visible in `npm run dev` but not on the live site.
 # Set this to false (or delete the line) to publish.
 draft: true
@@ -14,7 +14,7 @@ delete the file.
 
 ## What you'll find here
 
-Adventures in vibe coding, shifting left, and overcoming boundaries: what I
+Adventures in vibe coding, building past my pay grade, and overcoming boundaries: what I
 tried, what broke, and what I learned.
 
 ## Code blocks

@@ -6,7 +6,7 @@ import { SITE } from "../../site";
 export const GET: APIRoute = async () => {
   const png = await renderCard({
     title: SITE.title,
-    subtitle: "Vibe coding, shifting left, and overcoming boundaries",
+    subtitle: "Vibe coding and building past my pay grade",
     seed: "blog.prignano.ai",
     hue: 205,
   });
