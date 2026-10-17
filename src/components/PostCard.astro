@@ -1,0 +1,39 @@
+---
+import { formatDate, hueFor, readingMinutes, type Post } from "../lib/posts";
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, date, tags, draft } = post.data;
+const href = `/posts/${post.id}/`;
+---
+
+<li>
+  <article class="card">
+    <a class="card-art" href={href} tabindex="-1" aria-hidden="true">
+      <line-art seed={post.id} hue={hueFor(post)} track=".card"></line-art>
+    </a>
+    <div class="card-body">
+      <p class="meta">
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        <span>{readingMinutes(post)} min read</span>
+        {draft && <span class="draft">Draft</span>}
+      </p>
+      <h2><a href={href}>{title}</a></h2>
+      <p class="desc">{description}</p>
+      {
+        tags.length > 0 && (
+          <ul class="tags">
+            {tags.map((tag) => (
+              <li>
+                <a href={`/tags/${tag}/`}>{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </article>
+</li>

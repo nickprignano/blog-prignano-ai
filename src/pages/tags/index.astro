@@ -1,0 +1,27 @@
+---
+import Base from "../../layouts/Base.astro";
+import { getPosts, getTags } from "../../lib/posts";
+
+const tags = getTags(await getPosts());
+---
+
+<Base title="Tags" description="Every topic on the blog.">
+  <div class="page">
+    <h1>Tags</h1>
+    {
+      tags.length === 0 ? (
+        <p>No tags yet.</p>
+      ) : (
+        <ul class="tags tag-cloud">
+          {tags.map(({ tag, count }) => (
+            <li>
+              <a href={`/tags/${tag}/`}>
+                {tag} <span>{count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Base>

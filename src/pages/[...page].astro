@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../layouts/Base.astro";
+import PostFeed from "../components/PostFeed.astro";
+import { getPosts } from "../lib/posts";
+import { SITE } from "../site";
+
+// Builds / for the newest posts and /2/, /3/, ... for older ones.
+export const getStaticPaths = (async ({ paginate }) => {
+  return paginate(await getPosts(), { pageSize: SITE.pageSize });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<Base title={page.currentPage > 1 ? `Page ${page.currentPage}` : undefined}>
+  {
+    page.currentPage === 1 && (
+      <section class="hero">
+        <line-art seed="blog.prignano.ai" hue="205" track=".hero" />
+        <div class="hero-text">
+          <h1>{SITE.title}</h1>
+          <p>{SITE.description}</p>
+        </div>
+      </section>
+    )
+  }
+  <PostFeed page={page} />
+</Base>

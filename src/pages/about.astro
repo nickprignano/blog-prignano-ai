@@ -1,0 +1,43 @@
+---
+import Base from "../layouts/Base.astro";
+import { SITE } from "../site";
+---
+
+<Base title="About" description={`About ${SITE.author} and this blog.`}>
+  <article class="post">
+    <header class="post-banner">
+      <line-art seed="about" hue="205" track=".post-banner" />
+      <div class="post-head">
+        <h1>About</h1>
+      </div>
+    </header>
+    <div class="prose">
+      <!-- TODO(Nick): replace this placeholder with your own bio. -->
+      <p>
+        I'm {SITE.author}. I work with Azure Virtual Desktop, Nerdio Manager for Enterprise, Terraform and Packer, and
+        this is where I write up what I learn along the way.
+      </p>
+      <p>
+        Posts are written for AVD and Nerdio admins, consultants and MSP engineers: practical walkthroughs, code you can
+        reuse, and the things I wish I'd known before I started.
+      </p>
+      <h2>Elsewhere</h2>
+      <ul>
+        {
+          SITE.links.map((link) => (
+            <li>
+              <a href={link.href}>{link.label}</a>
+            </li>
+          ))
+        }
+        <li><a href="/rss.xml">RSS feed</a></li>
+      </ul>
+      <h2>License</h2>
+      <p>
+        Posts are licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>: share and adapt them as
+        long as you credit the source. Code samples are <a href={`${SITE.repo}/blob/main/LICENSE`}>MIT</a>. Opinions are
+        my own.
+      </p>
+    </div>
+  </article>
+</Base>

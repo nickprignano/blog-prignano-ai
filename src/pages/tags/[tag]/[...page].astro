@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../../layouts/Base.astro";
+import PostFeed from "../../../components/PostFeed.astro";
+import { getPosts, getTags } from "../../../lib/posts";
+import { SITE, TAG_HUES } from "../../../site";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPosts();
+  return getTags(posts).flatMap(({ tag }) =>
+    paginate(
+      posts.filter((post) => post.data.tags.includes(tag)),
+      { params: { tag }, props: { tag }, pageSize: SITE.pageSize },
+    ),
+  );
+}) satisfies GetStaticPaths;
+
+const { page, tag } = Astro.props;
+---
+
+<Base title={`Posts tagged ${tag}`} description={`Posts about ${tag} on ${SITE.title}.`}>
+  <section class="hero hero-slim">
+    <line-art seed={`tag:${tag}`} hue={TAG_HUES[tag]} track=".hero" />
+    <div class="hero-text">
+      <p class="eyebrow"><a href="/tags/">Tags</a></p>
+      <h1>#{tag}</h1>
+      <p>{page.total} {page.total === 1 ? "post" : "posts"}</p>
+    </div>
+  </section>
+  <PostFeed page={page} />
+</Base>
