@@ -1,7 +1,7 @@
 # blog.prignano.ai
 
 Source for [blog.prignano.ai](https://blog.prignano.ai): adventures in vibe
-coding, building past my pay grade, and overcoming boundaries.
+coding and overcoming self-imposed boundaries.
 
 It's a static [Astro](https://astro.build) site. Cloudflare builds it and
 deploys it whenever something is merged to `main`.
