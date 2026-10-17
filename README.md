@@ -92,9 +92,9 @@ account as prignano.ai.
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Import a
    repository** → pick `nickprignano/blog-prignano-ai`.
-2. Keep the defaults: project name `blog-prignano-ai`, build command
-   `npm run build`, deploy command `npx wrangler deploy`, production branch
-   `main`.
+2. Project name `blog-prignano-ai`, production branch `main`, deploy command
+   `npx wrangler deploy`. Leave the build command empty: `wrangler.jsonc`
+   runs `npm run build` as part of every deploy.
 3. Optional, for a preview link on every pull request: in the Worker's
    **Settings → Build**, turn on **Builds for non-production branches**
    (deploy command `npx wrangler versions upload`).

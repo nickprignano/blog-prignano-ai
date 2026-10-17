@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "blog-prignano-ai",
   "compatibility_date": "2026-10-01",
+  // Every wrangler command that uploads the site (deploy, versions upload,
+  // preview) builds it first, so Cloudflare needs no separate build command.
+  "build": { "command": "npm run build" },
   // A static site: Cloudflare serves the built files directly, no Worker code.
   "assets": {
     "directory": "./dist",
