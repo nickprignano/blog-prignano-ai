@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "blog-prignano-ai",
   "compatibility_date": "2026-10-01",
+  // Every wrangler command that uploads the site (deploy, versions upload,
+  // preview) builds it first, so Cloudflare needs no separate build command.
+  "build": { "command": "npm run build" },
   // A static site: Cloudflare serves the built files directly, no Worker code.
   "assets": {
     "directory": "./dist",
@@ -10,5 +13,9 @@
   },
   // Deploying attaches blog.prignano.ai and creates its DNS record and
   // certificate, because prignano.ai's DNS is on Cloudflare.
-  "routes": [{ "pattern": "blog.prignano.ai", "custom_domain": true }]
+  "routes": [{ "pattern": "blog.prignano.ai", "custom_domain": true }],
+  // Cloudflare's pull request preview builds run `npx wrangler preview`,
+  // which refuses to run without this block. A static site needs no
+  // preview-specific settings, so it's empty.
+  "previews": {}
 }
