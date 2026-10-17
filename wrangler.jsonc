@@ -13,5 +13,9 @@
   },
   // Deploying attaches blog.prignano.ai and creates its DNS record and
   // certificate, because prignano.ai's DNS is on Cloudflare.
-  "routes": [{ "pattern": "blog.prignano.ai", "custom_domain": true }]
+  "routes": [{ "pattern": "blog.prignano.ai", "custom_domain": true }],
+  // Cloudflare's pull request preview builds run `npx wrangler preview`,
+  // which refuses to run without this block. A static site needs no
+  // preview-specific settings, so it's empty.
+  "previews": {}
 }

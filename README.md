@@ -95,9 +95,10 @@ account as prignano.ai.
 2. Project name `blog-prignano-ai`, production branch `main`, deploy command
    `npx wrangler deploy`. Leave the build command empty: `wrangler.jsonc`
    runs `npm run build` as part of every deploy.
-3. Optional, for a preview link on every pull request: in the Worker's
-   **Settings → Build**, turn on **Builds for non-production branches**
-   (deploy command `npx wrangler versions upload`).
+3. Preview links on pull requests: in the Worker's **Settings → Build**,
+   **Builds for non-production branches** is on by default. Keep its default
+   command, `npx wrangler preview`; the `previews` block in `wrangler.jsonc`
+   is what it needs.
 
 ### 2. DNS and HTTPS for blog.prignano.ai
 
