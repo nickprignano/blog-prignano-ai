@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blog-prignano-ai",
+  "compatibility_date": "2026-10-01",
+  // A static site: Cloudflare serves the built files directly, no Worker code.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  // Deploying attaches blog.prignano.ai and creates its DNS record and
+  // certificate, because prignano.ai's DNS is on Cloudflare.
+  "routes": [{ "pattern": "blog.prignano.ai", "custom_domain": true }]
+}

@@ -1,0 +1,77 @@
+---
+import type { Page } from "astro";
+import PostCard from "./PostCard.astro";
+import type { Post } from "../lib/posts";
+
+interface Props {
+  page: Page<Post>;
+}
+
+const { page } = Astro.props;
+---
+
+{
+  page.data.length === 0 ? (
+    <p class="empty">No posts yet.</p>
+  ) : (
+    <ol class="feed" data-feed>
+      {page.data.map((post) => (
+        <PostCard post={post} />
+      ))}
+    </ol>
+  )
+}
+
+<!--
+  Plain page links, so every post is reachable without JavaScript and by
+  search engines. With JavaScript, the next page loads as the reader nears
+  the bottom and these links are hidden.
+-->
+<nav class="pager" data-pager aria-label="More posts">
+  {page.url.prev && <a href={page.url.prev} rel="prev">Newer posts</a>}
+  {page.url.next && <a href={page.url.next} rel="next" data-next>Older posts</a>}
+</nav>
+<p class="feed-status" data-feed-status aria-live="polite"></p>
+
+<script>
+  // Infinite scroll: fetch the next page's HTML and append its posts.
+  const feed = document.querySelector<HTMLOListElement>("[data-feed]");
+  const pager = document.querySelector<HTMLElement>("[data-pager]");
+  const status = document.querySelector<HTMLElement>("[data-feed-status]");
+  let next = document.querySelector<HTMLAnchorElement>("[data-next]")?.href ?? null;
+
+  if (feed && pager && status && "IntersectionObserver" in window) {
+    pager.hidden = true;
+    let loading = false;
+
+    const load = async () => {
+      if (loading || !next) return;
+      loading = true;
+      status.textContent = "Loading more posts…";
+      try {
+        const res = await fetch(next);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+        const items = doc.querySelectorAll("[data-feed] > li");
+        feed.append(...Array.from(items, (item) => document.importNode(item, true)));
+        next = doc.querySelector<HTMLAnchorElement>("[data-next]")?.getAttribute("href") ?? null;
+        if (next) next = new URL(next, location.href).href;
+        status.textContent = next ? "" : "That's every post.";
+      } catch {
+        // Fall back to the plain links so the reader can still go on.
+        status.textContent = "";
+        pager.hidden = false;
+        observer.disconnect();
+      } finally {
+        loading = false;
+      }
+      // If the new posts didn't fill the screen, keep going.
+      if (next && status.getBoundingClientRect().top < window.innerHeight * 2) load();
+    };
+
+    const observer = new IntersectionObserver(([entry]) => entry.isIntersecting && load(), {
+      rootMargin: "0px 0px 800px 0px",
+    });
+    observer.observe(status);
+  }
+</script>
