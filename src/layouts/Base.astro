@@ -1,5 +1,7 @@
 ---
+import { headerHtml, THEME_INIT_SCRIPT } from "prignano-theme";
 import { SITE } from "../site";
+import "prignano-theme/theme.css";
 import "../styles/global.css";
 
 interface Props {
@@ -14,6 +16,16 @@ const { title, description = SITE.description, image = "/og/index.png", article 
 // Which header link to mark as the current page.
 const path = Astro.url.pathname;
 const section = path.startsWith("/tags/") ? "tags" : path.startsWith("/about/") ? "about" : "blog";
+// The header shared by every prignano.ai site, with the blog's own pages added.
+const header = headerHtml({
+  current: section,
+  bio: SITE.bio,
+  links: [
+    { id: "tags", label: "Tags", href: "/tags/" },
+    { id: "about", label: "About", href: "/about/" },
+  ],
+  local: { blog: "/" },
+});
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, SITE.url);
 const imageUrl = new URL(image, SITE.url);
@@ -56,37 +68,13 @@ const beacon = import.meta.env.CF_BEACON_TOKEN;
     }
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Set the theme before first paint so dark mode doesn't flash. -->
-    <script is:inline>
-      try {
-        const saved = localStorage.getItem("theme");
-        if (saved === "light" || saved === "dark") document.documentElement.dataset.theme = saved;
-      } catch {}
-    </script>
+    <!-- Set the theme before first paint so dark mode doesn't flash. The
+         choice is shared with the other prignano.ai sites. -->
+    <script is:inline set:html={THEME_INIT_SCRIPT} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <!-- The same header as prignano.ai, with the blog's own links added. -->
-    <header class="site-header">
-      <a class="identity" href="/">
-        <img class="avatar" src={SITE.avatar} alt="" width="56" height="56" />
-        <span class="identity-text">
-          <span class="name">{SITE.author}</span>
-          <span class="bio">{SITE.bio}</span>
-        </span>
-      </a>
-      <nav class="links">
-        <a href="/" aria-current={section === "blog" ? "page" : undefined}>Blog</a>
-        <a href="/tags/" aria-current={section === "tags" ? "page" : undefined}>Tags</a>
-        <a href="/about/" aria-current={section === "about" ? "page" : undefined}>About</a>
-        {SITE.links.map((link) => <a href={link.href}>{link.label}</a>)}
-        <button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
-          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
-            <path fill="currentColor" d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"></path>
-          </svg>
-        </button>
-      </nav>
-    </header>
+    <Fragment set:html={header} />
 
     <main id="main">
       <slot />
@@ -103,7 +91,8 @@ const beacon = import.meta.env.CF_BEACON_TOKEN;
 
     <script>
       import "../scripts/line-art";
-      import "../scripts/theme";
+      import { initThemeToggle } from "prignano-theme";
+      initThemeToggle();
     </script>
     {beacon && <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: beacon })} />}
   </body>

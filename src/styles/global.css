@@ -1,88 +1,19 @@
-/* Colours match prignano.ai. Dark mode follows the system unless the reader
-   picks one with the toggle (html[data-theme]). */
+/* Colors, dark mode and the header come from prignano-theme, shared with
+   prignano.ai. This file only adds the blog's layout. */
 :root {
-  --bg: #f6f7f9;
-  --fg: #111418;
-  --muted: #5f6873;
-  --card: #ffffff;
-  --border: #e3e6ea;
-  --accent: #2f6feb;
-  --chip: #eef3fe;
-  --chip-fg: #2451b3;
-  --code-bg: #f3f5f8;
-  --art-bg: linear-gradient(135deg, #1b2230, #121821);
   --measure: 72ch;
   --wide: min(1080px, calc(100vw - 48px));
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0d1117;
-    --fg: #e6edf3;
-    --muted: #8b949e;
-    --card: #151b23;
-    --border: #2a313c;
-    --accent: #58a6ff;
-    --chip: #1a2a44;
-    --chip-fg: #9cc2ff;
-    --code-bg: #0b0f15;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0d1117;
-  --fg: #e6edf3;
-  --muted: #8b949e;
-  --card: #151b23;
-  --border: #2a313c;
-  --accent: #58a6ff;
-  --chip: #1a2a44;
-  --chip-fg: #9cc2ff;
-  --code-bg: #0b0f15;
-  color-scheme: dark;
+  --ph-width: var(--wide);
 }
 
 * { box-sizing: border-box; }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
-
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+body { line-height: 1.6; }
 
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--card); padding: 8px 12px; border-radius: 8px; }
 
-/* Header: matches prignano.ai (avatar, name, bio, links on the right). */
-.site-header {
-  width: var(--wide);
-  margin: 0 auto;
-  padding: clamp(14px, 3vh, 32px) 0 clamp(12px, 2.5vh, 28px);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.identity { display: flex; align-items: center; gap: 16px; min-width: 0; color: var(--fg); }
-.identity:hover { text-decoration: none; }
-.avatar { border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; background: var(--card); }
-.identity-text { display: flex; flex-direction: column; min-width: 0; }
-.name { font-size: clamp(1.25rem, 3.2vh, 1.75rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
-.bio { margin-top: 2px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.links { margin-left: auto; display: flex; align-items: center; gap: 16px; font-size: 0.9rem; flex-shrink: 0; }
-.links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; }
-.theme-toggle {
-  width: 30px; height: 30px; border-radius: 50%;
-  display: grid; place-items: center;
-  border: 1px solid var(--border); background: var(--card); color: var(--fg); cursor: pointer;
-}
+.ph-header { padding: clamp(14px, 3vh, 32px) 0 clamp(12px, 2.5vh, 28px); }
 
 .site-footer { width: var(--wide); margin: 64px auto 0; padding: 24px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
 .site-footer p { margin: 4px 0; }
@@ -214,7 +145,7 @@ line-art canvas { display: block; width: 100%; height: 100%; }
   border-radius: 6px;
 }
 
-/* Code blocks: Shiki emits light and dark colours; pick one per theme. */
+/* Code blocks: Shiki emits light and dark colors; pick one per theme. */
 .code-wrap { position: relative; margin: 1.4em 0; }
 .prose pre {
   margin: 1.4em 0;
@@ -253,13 +184,6 @@ line-art canvas { display: block; width: 100%; height: 100%; }
 /* Narrow screens: art on top of each card. */
 @media (max-width: 720px) {
   :root { --wide: calc(100vw - 32px); }
-  .site-header { flex-wrap: wrap; gap: 10px 12px; }
-  .avatar { width: 44px; height: 44px; }
-  .identity { gap: 12px; }
-  .name { font-size: 1.25rem; }
-  .bio { font-size: 0.875rem; }
-  .links { margin-left: 0; width: 100%; flex-wrap: wrap; gap: 6px 16px; font-size: 0.925rem; }
-  .theme-toggle { margin-left: auto; }
   .card { grid-template-columns: 1fr; }
   .card-art { min-height: 150px; }
   .hero, .post-banner { border-radius: 12px; }

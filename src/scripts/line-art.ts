@@ -185,7 +185,7 @@ const flowTrails: Style = (ctx, w, h, rand, { hues, bg }) => {
   };
 
   // Each tail is drawn in three segments, faint at the back and bright at the
-  // head. Batching by colour and segment keeps it to a dozen strokes a frame.
+  // head. Batching by color and segment keeps it to a dozen strokes a frame.
   const draw = () => {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, w, h);
