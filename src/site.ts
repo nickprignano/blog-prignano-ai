@@ -18,8 +18,8 @@ export const SITE = {
   ],
 };
 
-// Colour of a post's line art, by its first tag. Tags not listed here get a
-// colour picked from the post's slug.
+// Color of a post's line art, by its first tag. Tags not listed here get a
+// color picked from the post's slug.
 export const TAG_HUES: Record<string, number> = {
   "vibe-coding": 285,
   boundaries: 25,

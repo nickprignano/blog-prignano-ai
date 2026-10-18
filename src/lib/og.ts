@@ -93,10 +93,10 @@ function waveArt(seed: string, hue?: number) {
       for (const wv of waves) d += Math.sin(x * wv.f * Math.PI * 2 + i * wv.rowShift + wv.phase);
       pts.push(`${x.toFixed(1)},${(y0 - Math.abs(d / waves.length) * amp * env).toFixed(1)}`);
     }
-    const colour = `hsl(${Math.round((((base + (next - base) * k) % 360) + 360) % 360)}, 85%, ${Math.round(62 + 18 * Math.sin(k * Math.PI))}%)`;
+    const color = `hsl(${Math.round((((base + (next - base) * k) % 360) + 360) % 360)}, 85%, ${Math.round(62 + 18 * Math.sin(k * Math.PI))}%)`;
     // Fill under each line so the ones in front hide the ones behind.
     paths.push(`<path d="M${pts.join(" L")} L${W},${H} L0,${H} Z" fill="url(#bg)" stroke="none"/>`);
-    paths.push(`<path d="M${pts.join(" L")}" fill="none" stroke="${colour}" stroke-opacity="0.85" stroke-width="2.4"/>`);
+    paths.push(`<path d="M${pts.join(" L")}" fill="none" stroke="${color}" stroke-opacity="0.85" stroke-width="2.4"/>`);
   }
   const h = (n: number) => ((n % 360) + 360) % 360;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">

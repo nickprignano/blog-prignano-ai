@@ -49,7 +49,7 @@ deploys it whenever something is merged to `main`.
   and reference them relatively: `![Diagram](./fslogix-sizing/diagram.png)`.
 - The LinkedIn preview image is generated from the title, date and tags. Check
   it at `/og/posts/<file-name>.png` in a preview build.
-- First tag sets the colour of the post's line art. Colours for common tags are
+- First tag sets the color of the post's line art. Colors for common tags are
   in `TAG_HUES` in `src/site.ts`.
 
 ### Before you publish
@@ -75,11 +75,16 @@ npm run preview  # serves dist/
 | ---------------------------- | ----------------------------------------------------------- |
 | `src/content/posts/`         | Posts                                                       |
 | `src/content.config.ts`      | Front matter rules                                          |
-| `src/site.ts`                | Site title, description, links, posts per page, tag colours |
+| `src/site.ts`                | Site title, description, links, posts per page, tag colors |
 | `src/pages/about.astro`      | About page                                                  |
 | `src/scripts/line-art.ts`    | The animated line art (same family as prignano.ai)          |
 | `src/lib/og.ts`              | LinkedIn / Open Graph preview images                        |
-| `src/styles/global.css`      | Styles, light and dark                                      |
+| `src/styles/global.css`      | The blog's layout styles                                    |
+| `prignano-theme` (npm)       | Colors, dark mode and header shared with prignano.ai        |
+
+To pick up a new version of the shared theme, run
+`npm install https://codeload.github.com/nickprignano/prignano-theme/tar.gz/refs/tags/<tag>`
+in a pull request.
 
 RSS is at `/rss.xml`, the sitemap at `/sitemap-index.xml`.
 
