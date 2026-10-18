@@ -43,6 +43,7 @@ const beacon = import.meta.env.CF_BEACON_TOKEN;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/rss.xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="generator" content={Astro.generator} />
@@ -67,6 +68,9 @@ const beacon = import.meta.env.CF_BEACON_TOKEN;
       )
     }
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title ?? SITE.title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
 
     <!-- Set the theme before first paint so dark mode doesn't flash. The
          choice is shared with the other prignano.ai sites. -->
