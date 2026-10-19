@@ -14,7 +14,7 @@ export const SITE = {
   links: [
     { label: "GitHub", href: "https://github.com/nickprignano" },
     { label: "Website", href: "https://prignano.ai" },
-    // { label: "LinkedIn", href: "https://www.linkedin.com/in/your-handle" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/nickprignano" },
   ],
 };
 
