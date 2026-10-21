@@ -18,6 +18,8 @@ body { line-height: 1.6; }
 .site-footer { width: var(--wide); margin: 64px auto 0; padding: 24px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
 .site-footer p { margin: 4px 0; }
 .site-footer .footer-links { display: flex; gap: 16px; }
+/* Links inside footer text need more than color to stand out from it. */
+.site-footer p a { text-decoration: underline; text-underline-offset: 2px; }
 
 /* Line art: dark canvas, same as the project images on prignano.ai. */
 line-art { display: block; position: absolute; inset: 0; background: var(--art-bg); }
@@ -117,7 +119,7 @@ line-art canvas { display: block; width: 100%; height: 100%; }
 }
 .post-head h1 { margin: 6px 0 0; font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.15; letter-spacing: -0.025em; text-shadow: 0 2px 24px rgb(0 0 0 / 0.6); }
 .post-head .desc { margin: 10px 0 0; color: #c9d1d9; text-shadow: 0 1px 12px rgb(0 0 0 / 0.7); }
-.post-head .meta { color: #b1bac4; }
+.post-head .meta { color: #b1bac4; text-shadow: 0 1px 12px rgb(0 0 0 / 0.7); }
 .post-tags { width: min(var(--measure), 100%); margin: 40px auto 0; font-size: 1.0625rem; }
 @media (max-width: 720px) { .post-tags { font-size: 1rem; } }
 
@@ -158,6 +160,7 @@ line-art canvas { display: block; width: 100%; height: 100%; }
   line-height: 1.6;
   tab-size: 2;
 }
+.prose pre:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .code-wrap pre { margin: 0; }
 .prose pre.astro-code { background-color: var(--code-bg); }
 .prose pre.astro-code span { color: var(--shiki-light); }
