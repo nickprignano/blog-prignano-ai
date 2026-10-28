@@ -1,11 +1,12 @@
 // Asks Claude to read the posts and images a pull request adds or changes and
-// flag employer leaks, oversharing and other risky content before it's public.
+// flag employer leaks, personal privacy risks and other oversharing before
+// it's public.
 //
 //   ANTHROPIC_API_KEY=... node scripts/post-review.mjs [base..head]
 //
-// Extra private context (who the employer is, topics to avoid) comes from the
-// POST_REVIEW_CONTEXT secret, and the LEAK_DENYLIST names are passed along
-// too; neither is ever in the repo. This repo is public, so in GitHub Actions
+// Extra private context (who the employer is, topics to avoid, family names)
+// comes from the POST_REVIEW_CONTEXT secret, and the LEAK_DENYLIST terms are
+// passed along too; neither is ever in the repo. This repo is public, so in GitHub Actions
 // the findings show only file, line and category. Run it locally to read
 // Claude's notes. Findings marked "block" fail the check; "warn" doesn't.
 import { execFileSync } from "node:child_process";
@@ -32,7 +33,7 @@ if (!process.env.ANTHROPIC_API_KEY) {
   process.exit(0);
 }
 
-const SYSTEM = `You review posts for Nick's personal technical blog before they are published on the public internet. Nick has a day job, and the blog must never embarrass him, his employer, or the people he works with. Read each post (front matter included) and each image, and flag anything that a careful employer, customer or partner would not want public:
+const SYSTEM = `You review posts for Nick's personal technical blog before they are published on the public internet. Nick has a day job, and the blog must never embarrass him, his employer, or the people he works with. He also writes under his real name, so it must never help anyone find his home, steal his identity, or reach his family. Read each post (front matter included) and each image, and flag anything that a careful employer, customer or partner would not want public, or that exposes Nick's private life:
 
 - employer-internal: internal tools, systems, processes, org structure, people, metrics, or how the employer works, beyond what it has said publicly.
 - customer-or-partner: a customer or partner that can be identified by name or by detail, or their environment, problems or results.
@@ -40,6 +41,7 @@ const SYSTEM = `You review posts for Nick's personal technical blog before they 
 - employer-opinion: criticism or praise of the employer, its products, leadership or colleagues, or of its competitors in a way that could read as the employer's view.
 - speaking-for-employer: anything that reads as an official statement, promise or recommendation from the employer.
 - identifying-data: in text or images, real tenant, subscription or account IDs, hostnames, internal URLs, email addresses, usernames, names or faces of other people, or screenshots that show any of these.
+- personal-privacy: Nick's home address or anything that pins down where he lives (street, neighborhood, a photo of his house, street signs, license plates, landmarks), his phone number, personal email, birthdate or age, family members' names, faces or schools, his daily routine, travel plans or when his home is empty, and anything that answers common security questions (pets' names, first car, hometown, mother's maiden name). His name, the country or broad region he is in, his public profiles, and the site's contact form are fine.
 
 Use severity "block" when publishing it as written is likely to cause real trouble, and "warn" when it is worth a second look. Generic, public technical knowledge, Nick's own opinions about public products and technology, and his own personal story are fine; do not flag them. Placeholders like contoso and 00000000-0000-0000-0000-000000000000 are fine. Report each issue once, at the line it starts on (use line 0 for images), with a short note saying what is risky and how to fix it. Return an empty list if nothing needs attention.`;
 
@@ -83,7 +85,15 @@ const SCHEMA = {
           line: { type: "integer" },
           category: {
             type: "string",
-            enum: ["employer-internal", "customer-or-partner", "confidential", "employer-opinion", "speaking-for-employer", "identifying-data"],
+            enum: [
+              "employer-internal",
+              "customer-or-partner",
+              "confidential",
+              "employer-opinion",
+              "speaking-for-employer",
+              "identifying-data",
+              "personal-privacy",
+            ],
           },
           severity: { type: "string", enum: ["block", "warn"] },
           note: { type: "string" },
