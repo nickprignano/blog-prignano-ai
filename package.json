@@ -8,7 +8,8 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "leak-check": "node scripts/leak-check.mjs"
+    "leak-check": "node scripts/leak-check.mjs",
+    "post-review": "node scripts/post-review.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -20,6 +21,7 @@
     "satori": "^0.62.0"
   },
   "devDependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
     "@astrojs/check": "^0.9.10",
     "typescript": "^6.0.3",
     "wrangler": "^4.151.1"

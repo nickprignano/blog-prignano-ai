@@ -70,6 +70,21 @@ inside an image, so check screenshots by eye. To run it locally:
 LEAK_DENYLIST="name one, name two" npm run leak-check
 ```
 
+The Post review workflow then has Claude read the posts and images a pull
+request adds or changes, and fail the check on employer leaks and
+oversharing: internal tools or processes, customer or partner details,
+confidential or unreleased work, opinions about the employer, anything that
+reads as speaking for it, and IDs, hostnames or other people's details in
+text or screenshots. It needs the `ANTHROPIC_API_KEY` repository secret, and
+reads the optional `POST_REVIEW_CONTEXT` secret for private background, such
+as who the employer is and topics to stay away from. Because this repo is
+public, the check shows only the file, line and category. To read Claude's
+notes, run it locally against your branch:
+
+```sh
+ANTHROPIC_API_KEY=... POST_REVIEW_CONTEXT="..." npm run post-review
+```
+
 ## Run it locally
 
 Needs Node 22 or newer.
