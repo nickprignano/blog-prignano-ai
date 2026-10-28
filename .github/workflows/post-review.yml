@@ -1,0 +1,36 @@
+name: Post review
+
+# Claude reads the posts and images a pull request adds or changes and fails
+# the check on employer leaks, oversharing or other risky content. Needs the
+# ANTHROPIC_API_KEY repository secret; see "Before you publish" in the README.
+on:
+  pull_request:
+    paths:
+      - "src/content/posts/**"
+      - "**/*.png"
+      - "**/*.jpg"
+      - "**/*.jpeg"
+      - "**/*.gif"
+      - "**/*.webp"
+
+permissions:
+  contents: read
+
+jobs:
+  post-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/post-review.mjs "$RANGE"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          POST_REVIEW_CONTEXT: ${{ secrets.POST_REVIEW_CONTEXT }}
+          LEAK_DENYLIST: ${{ secrets.LEAK_DENYLIST }}
+          RANGE: ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }}

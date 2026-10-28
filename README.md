@@ -60,14 +60,41 @@ names of employers or customers. Use placeholders such as
 
 The Leak check workflow enforces this on every pull request. It runs
 [gitleaks](https://github.com/gitleaks/gitleaks) for secrets, then
-`scripts/leak-check.mjs`, which fails on any GUID other than the all-zero
-placeholder and on any name in the `LEAK_DENYLIST` repository secret (commas
-or new lines between names, whole words, any case). It reads posts, front
-matter, image metadata and the pull request's commits, but not text drawn
-inside an image, so check screenshots by eye. To run it locally:
+`scripts/leak-check.mjs`, which fails on:
+
+- any GUID other than the all-zero placeholder,
+- any email address outside prignano.ai and the example domains,
+- any image that still has EXIF or XMP metadata, which can hold the GPS
+  location, camera and author (strip it with `exiftool -all= <file>`), and
+- any term in the `LEAK_DENYLIST` repository secret: employer, partner and
+  customer names, plus private details such as your street address, phone
+  number, birthdate and family members' names. Put terms on separate lines
+  (commas also separate terms). Matching is whole words in any case, and in a
+  number such as a phone number or date any separators match.
+
+It reads posts, front matter, image metadata and the pull request's commits,
+but not text drawn inside an image. To run it locally:
 
 ```sh
 LEAK_DENYLIST="name one, name two" npm run leak-check
+```
+
+The Post review workflow then has Claude read the posts and images a pull
+request adds or changes, and fail the check on employer leaks and
+oversharing: internal tools or processes, customer or partner details,
+confidential or unreleased work, opinions about the employer, anything that
+reads as speaking for it, IDs, hostnames or other people's details in text
+or screenshots, and personal privacy risks such as where you live, family
+members, your routine or travel, and answers to security questions. That
+includes what a photo shows, which the leak check can't read. It needs the
+`ANTHROPIC_API_KEY` repository secret, and reads the optional
+`POST_REVIEW_CONTEXT` secret for private background, such as who the
+employer is, family names, and topics to stay away from. Because this repo is
+public, the check shows only the file, line and category. To read Claude's
+notes, run it locally against your branch:
+
+```sh
+ANTHROPIC_API_KEY=... POST_REVIEW_CONTEXT="..." npm run post-review
 ```
 
 ## Run it locally
