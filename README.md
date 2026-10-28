@@ -58,6 +58,18 @@ This repo is public. Don't commit secrets, tenant or subscription IDs, or the
 names of employers or customers. Use placeholders such as
 `00000000-0000-0000-0000-000000000000` and `contoso`.
 
+The Leak check workflow enforces this on every pull request. It runs
+[gitleaks](https://github.com/gitleaks/gitleaks) for secrets, then
+`scripts/leak-check.mjs`, which fails on any GUID other than the all-zero
+placeholder and on any name in the `LEAK_DENYLIST` repository secret (commas
+or new lines between names, whole words, any case). It reads posts, front
+matter, image metadata and the pull request's commits, but not text drawn
+inside an image, so check screenshots by eye. To run it locally:
+
+```sh
+LEAK_DENYLIST="name one, name two" npm run leak-check
+```
+
 ## Run it locally
 
 Needs Node 22 or newer.
