@@ -1,0 +1,30 @@
+name: Leak check
+
+# Fails a pull request that would publish a secret, an Azure GUID, or a name
+# on the private denylist. The denylist is the LEAK_DENYLIST repository
+# secret; see "Before you publish" in the README.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  leak-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Secrets and credentials in every commit of the pull request or push.
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: false
+      # GUIDs and denylisted names in files (images included) and commits.
+      - run: node scripts/leak-check.mjs "$RANGE"
+        env:
+          LEAK_DENYLIST: ${{ secrets.LEAK_DENYLIST }}
+          RANGE: ${{ github.event.pull_request.base.sha || github.event.before }}..${{ github.event.pull_request.head.sha || github.sha }}
