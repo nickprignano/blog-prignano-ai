@@ -3,9 +3,6 @@ title: "Welcome to the blog"
 description: "What this blog is about: vibe coding and overcoming self-imposed boundaries."
 date: 2026-10-17
 tags: [vibe-coding, boundaries]
-# A draft is visible in `npm run dev` but not on the live site.
-# Set this to false (or delete the line) to publish.
-draft: true
 ---
 
 This is a sample post. It shows what a post looks like and how the front
