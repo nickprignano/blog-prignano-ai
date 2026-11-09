@@ -17,7 +17,7 @@
     "@fontsource/inter": "^5.3.0",
     "@resvg/resvg-js": "^2.6.2",
     "astro": "^7.4.0",
-    "prignano-theme": "https://codeload.github.com/nickprignano/prignano-theme/tar.gz/4b3eeeced367f540d56613947e5e1eafe8735c64",
+    "prignano-theme": "https://codeload.github.com/nickprignano/prignano-theme/tar.gz/182290c9deee4d3c778252da0485f214c0e77065",
     "satori": "^0.62.0"
   },
   "devDependencies": {
