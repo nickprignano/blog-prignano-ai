@@ -1,9 +1,8 @@
-/* Colors, dark mode and the header come from prignano-theme, shared with
-   prignano.ai. This file only adds the blog's layout. */
+/* Colors, dark mode, the page width (--page-width), the reading width
+   (--measure), the header and the footer come from prignano-theme, shared
+   with prignano.ai. This file only adds the blog's layout. */
 :root {
-  --measure: 72ch;
-  --wide: min(1080px, calc(100vw - 48px));
-  --ph-width: var(--wide);
+  --wide: var(--page-width);
 }
 
 * { box-sizing: border-box; }
@@ -14,12 +13,6 @@ body { line-height: 1.6; }
 .skip:focus { left: 16px; top: 16px; z-index: 10; background: var(--card); padding: 8px 12px; border-radius: 8px; }
 
 .ph-header { padding: clamp(14px, 3vh, 32px) 0 clamp(12px, 2.5vh, 28px); }
-
-.site-footer { width: var(--wide); margin: 64px auto 0; padding: 24px 0 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.85rem; }
-.site-footer p { margin: 4px 0; }
-.site-footer .footer-links { display: flex; gap: 16px; }
-/* Links inside footer text need more than color to stand out from it. */
-.site-footer p a { text-decoration: underline; text-underline-offset: 2px; }
 
 /* Line art: dark canvas, same as the project images on prignano.ai. */
 line-art { display: block; position: absolute; inset: 0; background: var(--art-bg); }
@@ -96,7 +89,7 @@ line-art canvas { display: block; width: 100%; height: 100%; }
 .feed-status { text-align: center; color: var(--muted); font-size: 0.875rem; min-height: 1.5em; margin: 24px 0 0; }
 .empty { width: var(--wide); margin: 0 auto; color: var(--muted); }
 
-.page { width: min(var(--measure), calc(100vw - 32px)); margin: 0 auto; }
+.page { width: var(--wide); margin: 0 auto; }
 
 /* Post */
 .post { width: var(--wide); margin: 0 auto; }
@@ -186,7 +179,6 @@ line-art canvas { display: block; width: 100%; height: 100%; }
 
 /* Narrow screens: art on top of each card. */
 @media (max-width: 720px) {
-  :root { --wide: calc(100vw - 32px); }
   .card { grid-template-columns: 1fr; }
   .card-art { min-height: 150px; }
   .hero, .post-banner { border-radius: 12px; }

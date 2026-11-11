@@ -1,5 +1,5 @@
 ---
-import { headerHtml, THEME_INIT_SCRIPT } from "prignano-theme";
+import { footerHtml, headerHtml, THEME_INIT_SCRIPT } from "prignano-theme";
 import { SITE } from "../site";
 import "prignano-theme/theme.css";
 import "../styles/global.css";
@@ -25,6 +25,14 @@ const header = headerHtml({
     { id: "about", label: "About", href: "/about/" },
   ],
   local: { blog: "/" },
+});
+// The shared footer, with the blog's license note and its own links.
+const footer = footerHtml({
+  note: `Posts are licensed <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, code samples <a href="${SITE.repo}/blob/main/LICENSE">MIT</a>.`,
+  links: [
+    { label: "Website", href: "https://prignano.ai" },
+    { label: "RSS", href: "/rss.xml" },
+  ],
 });
 const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, SITE.url);
@@ -84,14 +92,7 @@ const beacon = import.meta.env.CF_BEACON_TOKEN;
       <slot />
     </main>
 
-    <footer class="site-footer">
-      <p>
-        © {new Date().getFullYear()} {SITE.author}. Posts are licensed{" "}
-        <a href="https://creativecommons.org/licenses/by/4.0/" rel="license">CC BY 4.0</a>, code samples{" "}
-        <a href={`${SITE.repo}/blob/main/LICENSE`}>MIT</a>.
-      </p>
-      <p class="footer-links">{SITE.links.map((link) => <a href={link.href}>{link.label}</a>)}<a href="/rss.xml">RSS</a></p>
-    </footer>
+    <Fragment set:html={footer} />
 
     <script>
       import "../scripts/line-art";
