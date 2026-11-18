@@ -8,16 +8,19 @@ import { z } from "astro/zod";
 // post can't reach the live site.
 const posts = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/posts" }),
-  schema: z.object({
-    title: z.string().min(1),
-    description: z.string().min(1).max(200),
-    date: z.coerce.date(),
-    updated: z.coerce.date().optional(),
-    tags: z
-      .array(z.string().regex(/^[a-z0-9-]+$/, "tags are lowercase words joined by hyphens, like azure-virtual-desktop"))
-      .default([]),
-    draft: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string().min(1),
+      description: z.string().min(1).max(200),
+      date: z.coerce.date(),
+      updated: z.coerce.date().optional(),
+      tags: z
+        .array(z.string().regex(/^[a-z0-9-]+$/, "tags are lowercase words joined by hyphens, like azure-virtual-desktop"))
+        .default([]),
+      draft: z.boolean().default(false),
+      // Optional social card image, relative to the post. Without it, the card is generated.
+      image: image().optional(),
+    }),
 });
 
 export const collections = { posts };

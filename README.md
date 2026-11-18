@@ -34,6 +34,7 @@ deploys it whenever something is merged to `main`.
    | `updated`     | no       | `YYYY-MM-DD`, shown as "Updated" on the post.                              |
    | `tags`        | no       | Lowercase, hyphens for spaces: `azure-virtual-desktop`, not `Azure VD`.    |
    | `draft`       | no       | `true` keeps the post off the live site; it still shows in `npm run dev`.  |
+   | `image`       | no       | Social card image, relative to the post: `./fslogix-sizing/card.png`. Cropped to 1200x630. Without it, the card is generated. |
 
 4. Open a pull request. The **Build** check fails if the front matter is
    missing or malformed, so a broken post can't reach the live site. Cloudflare
