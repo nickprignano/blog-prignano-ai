@@ -2,6 +2,7 @@
 title: "Stay Human"
 description: "The hardest part of writing, for me, has never been the writing."
 date: 2026-11-18
+image: ./stay-human/banner.png
 ---
 
 ![A person's head and shoulders drawn as part of a red heartbeat line, between blue circuit-board lines](./stay-human/banner.png)

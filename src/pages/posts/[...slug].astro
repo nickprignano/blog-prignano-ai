@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
+import { getImage } from "astro:assets";
 import Base from "../../layouts/Base.astro";
 import { formatDate, getPosts, hueFor, readingMinutes, type Post } from "../../lib/posts";
 
@@ -9,14 +10,18 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props as { post: Post };
-const { title, description, date, updated, tags, draft } = post.data;
+const { title, description, date, updated, tags, draft, image } = post.data;
 const { Content } = await render(post);
+// A post's own image, cropped to the 1200x630 social card size, or the generated card.
+const card = image
+  ? (await getImage({ src: image, width: 1200, height: 630, fit: "cover", format: "jpg" })).src
+  : `/og/posts/${post.id}.png`;
 ---
 
 <Base
   title={title}
   description={description}
-  image={`/og/posts/${post.id}.png`}
+  image={card}
   article={{ published: date, modified: updated, tags }}
 >
   <article class="post">
