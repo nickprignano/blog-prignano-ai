@@ -1,16 +1,15 @@
 ---
 import { Image } from "astro:assets";
-import { artFor, formatDate, imageFor, readingMinutes, type Post } from "../lib/posts";
+import { artFor, formatDate, readingMinutes, type Post } from "../lib/posts";
 
 interface Props {
   post: Post;
 }
 
 const { post } = Astro.props;
-const { title, description, date, tags, draft } = post.data;
+const { title, description, date, tags, draft, image } = post.data;
 const href = `/posts/${post.id}/`;
 const art = await artFor(post);
-const image = imageFor(post);
 ---
 
 <li>
