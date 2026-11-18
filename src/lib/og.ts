@@ -15,11 +15,14 @@ const font = (weight: 400 | 700) =>
   readFile(require.resolve(`@fontsource/inter/files/inter-latin-${weight}-normal.woff`));
 let fonts: Promise<Buffer[]> | undefined;
 
-type Card = { title: string; subtitle?: string; tags?: string[]; seed: string; hue?: number; style?: StyleName };
+// photo: a JPEG to use instead of the line art, as a path from the repo root.
+type Card = { title: string; subtitle?: string; tags?: string[]; seed: string; hue?: number; style?: StyleName; photo?: string };
 
-export async function renderCard({ title, subtitle, tags = [], seed, hue, style }: Card) {
+export async function renderCard({ title, subtitle, tags = [], seed, hue, style, photo }: Card) {
   const [regular, bold] = await (fonts ??= Promise.all([font(400), font(700)]));
-  const art = `data:image/svg+xml;base64,${Buffer.from(artSvg(seed, hue ?? null, style ?? null)).toString("base64")}`;
+  const art = photo
+    ? `data:image/jpeg;base64,${(await readFile(photo)).toString("base64")}`
+    : `data:image/svg+xml;base64,${Buffer.from(artSvg(seed, hue ?? null, style ?? null)).toString("base64")}`;
 
   const el = (type: string, style: Record<string, unknown>, children?: unknown) => ({
     type,
@@ -29,7 +32,7 @@ export async function renderCard({ title, subtitle, tags = [], seed, hue, style 
   // Satori sizes boxes without padding, so the text block is positioned
   // inside the card rather than padded.
   const tree = el("div", { width: W, height: H, display: "flex", fontFamily: "Inter", color: "#e6edf3" }, [
-    { type: "img", props: { src: art, width: W, height: H, style: { position: "absolute", top: 0, left: 0 } } },
+    { type: "img", props: { src: art, width: W, height: H, style: { position: "absolute", top: 0, left: 0, objectFit: "cover" } } },
     // Darken the lower part so the title stays readable over any art.
     el("div", {
       position: "absolute",

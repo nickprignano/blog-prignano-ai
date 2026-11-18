@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
+import type { ImageMetadata } from "astro";
 import type { StyleName } from "./art";
 
 export type Post = CollectionEntry<"posts">;
@@ -13,6 +14,14 @@ export function getTags(posts: Post[]) {
   const counts = new Map<string, number>();
   for (const post of posts) for (const tag of post.data.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([tag, count]) => ({ tag, count }));
+}
+
+// A post's header image, made with ElevenLabs and saved as
+// src/assets/posts/<slug>.jpg. A post without one shows its line art instead.
+const images = import.meta.glob<{ default: ImageMetadata }>("../assets/posts/*.jpg", { eager: true });
+
+export function imageFor(post: Post): ImageMetadata | undefined {
+  return images[`../assets/posts/${post.id}.jpg`]?.default;
 }
 
 // A post's line art. Posts take turns through the styles, oldest first, and
