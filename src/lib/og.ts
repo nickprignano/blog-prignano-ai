@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { Resvg } from "@resvg/resvg-js";
 import satori from "satori";
-import { hash, mulberry32 } from "./random";
+import { createScene, type Ctx, type StyleName } from "./art";
 
 // Open Graph cards (1200x630) for link previews on LinkedIn and elsewhere:
 // a still of the post's line art with the title over it.
@@ -15,11 +15,11 @@ const font = (weight: 400 | 700) =>
   readFile(require.resolve(`@fontsource/inter/files/inter-latin-${weight}-normal.woff`));
 let fonts: Promise<Buffer[]> | undefined;
 
-type Card = { title: string; subtitle?: string; tags?: string[]; seed: string; hue?: number };
+type Card = { title: string; subtitle?: string; tags?: string[]; seed: string; hue?: number; style?: StyleName };
 
-export async function renderCard({ title, subtitle, tags = [], seed, hue }: Card) {
+export async function renderCard({ title, subtitle, tags = [], seed, hue, style }: Card) {
   const [regular, bold] = await (fonts ??= Promise.all([font(400), font(700)]));
-  const art = `data:image/svg+xml;base64,${Buffer.from(waveArt(seed, hue)).toString("base64")}`;
+  const art = `data:image/svg+xml;base64,${Buffer.from(artSvg(seed, hue ?? null, style ?? null)).toString("base64")}`;
 
   const el = (type: string, style: Record<string, unknown>, children?: unknown) => ({
     type,
@@ -64,44 +64,96 @@ export async function renderCard({ title, subtitle, tags = [], seed, hue }: Card
   return new Resvg(svg).render().asPng();
 }
 
-// A still of the "wave lines" style from the site's line art, as SVG.
-function waveArt(seed: string, hue?: number) {
-  const rand = mulberry32(hash(seed));
-  const base = hue ?? rand() * 360;
-  const next = base + 25 + rand() * 45;
-  const lines = 30;
-  const top = H * 0.08;
-  const gap = (H * 0.62) / (lines - 1);
-  const amp = gap * (3 + rand() * 3);
-  const waves = Array.from({ length: 3 }, () => ({
-    f: (2 + rand() * 7) / W,
-    phase: rand() * 10,
-    rowShift: 0.15 + rand() * 0.4,
-  }));
-  const centre = 0.55 + rand() * 0.3;
-  const width = 0.2 + rand() * 0.15;
+// A still of the post's line art, drawn as SVG through the same code as the
+// animated art on the site.
+function artSvg(seed: string, hue: number | null, style: StyleName | null) {
+  const ctx = new SvgCtx();
+  createScene(ctx, W, H, seed, hue, style).step(0, { x: 0, y: 0, strength: 0 });
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${ctx.defs.join("")}</defs>${ctx.body.join("")}</svg>`;
+}
 
-  const paths: string[] = [];
-  for (let i = 0; i < lines; i++) {
-    const y0 = top + i * gap;
-    const k = i / (lines - 1);
-    const pts: string[] = [];
-    for (let j = 0; j <= 160; j++) {
-      const x = (j / 160) * W;
-      const env = Math.exp(-(((x / W - centre) / width) ** 2));
-      let d = 0;
-      for (const wv of waves) d += Math.sin(x * wv.f * Math.PI * 2 + i * wv.rowShift + wv.phase);
-      pts.push(`${x.toFixed(1)},${(y0 - Math.abs(d / waves.length) * amp * env).toFixed(1)}`);
-    }
-    const color = `hsl(${Math.round((((base + (next - base) * k) % 360) + 360) % 360)}, 85%, ${Math.round(62 + 18 * Math.sin(k * Math.PI))}%)`;
-    // Fill under each line so the ones in front hide the ones behind.
-    paths.push(`<path d="M${pts.join(" L")} L${W},${H} L0,${H} Z" fill="url(#bg)" stroke="none"/>`);
-    paths.push(`<path d="M${pts.join(" L")}" fill="none" stroke="${color}" stroke-opacity="0.85" stroke-width="2.4"/>`);
+class SvgGradient {
+  stops: string[] = [];
+  constructor(
+    readonly id: string,
+    readonly coords: number[],
+  ) {}
+  addColorStop(offset: number, color: string) {
+    this.stops.push(`<stop offset="${offset}" stop-color="${rgb(color).color}"/>`);
   }
-  const h = (n: number) => ((n % 360) + 360) % 360;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-<stop offset="0" stop-color="hsl(${Math.round(h(base + 200))}, 35%, 5%)"/><stop offset="1" stop-color="hsl(${Math.round(h(base))}, 50%, 11%)"/>
-</linearGradient></defs>
-<rect width="${W}" height="${H}" fill="url(#bg)"/>${paths.join("")}</svg>`;
+}
+
+// Records the canvas calls the line art makes as SVG elements.
+class SvgCtx implements Ctx {
+  fillStyle: unknown = "#000";
+  strokeStyle: unknown = "#000";
+  lineWidth = 1;
+  lineCap = "butt";
+  lineJoin = "miter";
+  globalCompositeOperation = "source-over";
+  defs: string[] = [];
+  body: string[] = [];
+  private d = "";
+  private gradients: SvgGradient[] = [];
+
+  createLinearGradient(x0: number, y0: number, x1: number, y1: number) {
+    const g = new SvgGradient(`g${this.gradients.length}`, [x0, y0, x1, y1]);
+    this.gradients.push(g);
+    return g;
+  }
+  beginPath() {
+    this.d = "";
+  }
+  moveTo(x: number, y: number) {
+    this.d += `M${x.toFixed(1)} ${y.toFixed(1)}`;
+  }
+  lineTo(x: number, y: number) {
+    this.d += `L${x.toFixed(1)} ${y.toFixed(1)}`;
+  }
+  closePath() {
+    this.d += "Z";
+  }
+  stroke() {
+    if (!this.d) return;
+    this.body.push(
+      `<path d="${this.d}" fill="none" stroke=${this.paint(this.strokeStyle, "stroke")} stroke-width="${this.lineWidth}" stroke-linecap="${this.lineCap}" stroke-linejoin="${this.lineJoin}"${this.blend()}/>`,
+    );
+  }
+  fill() {
+    if (this.d) this.body.push(`<path d="${this.d}" fill=${this.paint(this.fillStyle, "fill")}${this.blend()}/>`);
+  }
+  fillRect(x: number, y: number, w: number, h: number) {
+    this.body.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill=${this.paint(this.fillStyle, "fill")}${this.blend()}/>`);
+  }
+  // Canvas's "lighter" adds colors together; screen is the nearest SVG blend.
+  private blend() {
+    return this.globalCompositeOperation === "lighter" ? ` style="mix-blend-mode:screen"` : "";
+  }
+  // A paint attribute's quoted value, plus its opacity for a color.
+  private paint(style: unknown, attr: "fill" | "stroke") {
+    if (!(style instanceof SvgGradient)) {
+      const { color, alpha } = rgb(String(style));
+      return `"${color}" ${attr}-opacity="${alpha}"`;
+    }
+    if (!this.defs.some((d) => d.includes(`id="${style.id}"`))) {
+      const [x1, y1, x2, y2] = style.coords.map((n) => n.toFixed(1));
+      this.defs.push(
+        `<linearGradient id="${style.id}" gradientUnits="userSpaceOnUse" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${style.stops.join("")}</linearGradient>`,
+      );
+    }
+    return `"url(#${style.id})"`;
+  }
+}
+
+// resvg doesn't read hsla(), so turn the art's colors into rgb and an alpha.
+function rgb(css: string) {
+  const m = css.match(/^hsla\(([\d.]+), ([\d.]+)%, ([\d.]+)%, ([\d.]+)\)$/);
+  if (!m) return { color: css, alpha: 1 };
+  const [h, s, l, alpha] = m.slice(1).map(Number);
+  const a = (s / 100) * Math.min(l / 100, 1 - l / 100);
+  const f = (n: number) => {
+    const k = (n + h / 30) % 12;
+    return Math.round(255 * (l / 100 - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))));
+  };
+  return { color: `rgb(${f(0)},${f(8)},${f(4)})`, alpha };
 }

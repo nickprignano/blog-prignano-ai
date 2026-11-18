@@ -1,5 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content";
-import { TAG_HUES } from "../site";
+import type { StyleName } from "./art";
 
 export type Post = CollectionEntry<"posts">;
 
@@ -15,9 +15,19 @@ export function getTags(posts: Post[]) {
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([tag, count]) => ({ tag, count }));
 }
 
-export function hueFor(post: Post): number | undefined {
-  return post.data.tags.map((t) => TAG_HUES[t]).find((h) => h !== undefined);
+// A post's line art. Posts take turns through the styles, oldest first, and
+// each post's color sits a golden angle (137.5 degrees) around the color wheel
+// from the one before, so posts next to each other never look alike. Drafts
+// count too, so publishing one doesn't change the art of the posts after it,
+// and a new post never changes an older one.
+export async function artFor(post: Post): Promise<{ seed: string; hue: number; style: StyleName }> {
+  const all = await getCollection("posts");
+  const order = all.sort((a, b) => a.data.date.getTime() - b.data.date.getTime() || a.id.localeCompare(b.id));
+  const i = order.findIndex((p) => p.id === post.id);
+  return { seed: post.id, hue: Math.round((85 + i * 137.5) % 360), style: ART_STYLES[i % ART_STYLES.length] };
 }
+
+const ART_STYLES: StyleName[] = ["waves", "flow", "harmonograph"];
 
 export function readingMinutes(post: Post) {
   const words = (post.body ?? "").split(/\s+/).filter(Boolean).length;

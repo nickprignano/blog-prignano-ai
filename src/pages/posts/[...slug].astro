@@ -3,7 +3,7 @@ import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
 import { getImage } from "astro:assets";
 import Base from "../../layouts/Base.astro";
-import { formatDate, getPosts, hueFor, readingMinutes, type Post } from "../../lib/posts";
+import { artFor, formatDate, getPosts, readingMinutes, type Post } from "../../lib/posts";
 
 export const getStaticPaths = (async () => {
   return (await getPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
@@ -12,6 +12,7 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props as { post: Post };
 const { title, description, date, updated, tags, draft, image } = post.data;
 const { Content } = await render(post);
+const art = await artFor(post);
 // A post's own image, cropped to the 1200x630 social card size, or the generated card.
 const card = image
   ? (await getImage({ src: image, width: 1200, height: 630, fit: "cover", format: "jpg" })).src
@@ -26,7 +27,7 @@ const card = image
 >
   <article class="post">
     <header class="post-banner">
-      <line-art seed={post.id} hue={hueFor(post)} track=".post-banner" />
+      <line-art seed={art.seed} hue={art.hue} art-style={art.style} track=".post-banner" />
       <div class="post-head">
         <p class="meta">
           <time datetime={date.toISOString()}>{formatDate(date)}</time>
