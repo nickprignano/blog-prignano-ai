@@ -4,6 +4,8 @@ description: "The hardest part of writing, for me, has never been the writing."
 date: 2026-11-18
 ---
 
+![A person's head and shoulders drawn as part of a red heartbeat line, between blue circuit-board lines](./stay-human/banner.png)
+
 The hardest part of writing, for me, has never been the writing.
 
 It's thinking about who might read it or how it could be used against me by those with the minds to do so. Anything I post publicly goes out under my own name. So every post has to be reviewed adversarially, like someone is hunting for the mistake, because I'm human and I make them. One wrong detail, one name I shouldn't have used, one sentence that lands wrong. That kind of thinking is a writer's block all by itself.
