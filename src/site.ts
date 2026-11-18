@@ -18,8 +18,8 @@ export const SITE = {
   ],
 };
 
-// Color of a post's line art, by its first tag. Tags not listed here get a
-// color picked from the post's slug.
+// Color of a tag page's line art. Tags not listed here get a color picked
+// from the tag. Posts pick their own colors (see artFor in src/lib/posts.ts).
 export const TAG_HUES: Record<string, number> = {
   "vibe-coding": 285,
   boundaries: 25,

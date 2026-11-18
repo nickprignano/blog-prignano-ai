@@ -2,7 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
 import Base from "../../layouts/Base.astro";
-import { formatDate, getPosts, hueFor, readingMinutes, type Post } from "../../lib/posts";
+import { artFor, formatDate, getPosts, readingMinutes, type Post } from "../../lib/posts";
 
 export const getStaticPaths = (async () => {
   return (await getPosts()).map((post) => ({ params: { slug: post.id }, props: { post } }));
@@ -11,6 +11,7 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props as { post: Post };
 const { title, description, date, updated, tags, draft } = post.data;
 const { Content } = await render(post);
+const art = await artFor(post);
 ---
 
 <Base
@@ -21,7 +22,7 @@ const { Content } = await render(post);
 >
   <article class="post">
     <header class="post-banner">
-      <line-art seed={post.id} hue={hueFor(post)} track=".post-banner" />
+      <line-art seed={art.seed} hue={art.hue} art-style={art.style} track=".post-banner" />
       <div class="post-head">
         <p class="meta">
           <time datetime={date.toISOString()}>{formatDate(date)}</time>

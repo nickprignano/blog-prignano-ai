@@ -1,5 +1,5 @@
 ---
-import { formatDate, hueFor, readingMinutes, type Post } from "../lib/posts";
+import { artFor, formatDate, readingMinutes, type Post } from "../lib/posts";
 
 interface Props {
   post: Post;
@@ -8,12 +8,13 @@ interface Props {
 const { post } = Astro.props;
 const { title, description, date, tags, draft } = post.data;
 const href = `/posts/${post.id}/`;
+const art = await artFor(post);
 ---
 
 <li>
   <article class="card">
     <a class="card-art" href={href} tabindex="-1" aria-hidden="true">
-      <line-art seed={post.id} hue={hueFor(post)} track=".card"></line-art>
+      <line-art seed={art.seed} hue={art.hue} art-style={art.style} track=".card"></line-art>
     </a>
     <div class="card-body">
       <p class="meta">
